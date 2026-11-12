@@ -422,6 +422,12 @@ html[data-hall="op"] .cur{background:none;border:6px double #fff}
   if('IntersectionObserver' in window){var lo=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('live',e.isIntersecting)})},{rootMargin:'40% 0px 40% 0px'});document.querySelectorAll('.hall').forEach(function(h){lo.observe(h)})}
   else document.querySelectorAll('.hall').forEach(function(h){h.classList.add('live')});
 
+  /* links land inside the room (wipe finished, title on screen), not at its doorstep */
+  function enter(id){var el=document.getElementById(id);if(!el)return false;var d=el.querySelector('.door');
+    scrollTo(0,d?Math.round(d.getBoundingClientRect().top+scrollY+innerHeight*1.03):0);return true}
+  document.querySelectorAll('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){if(enter(a.getAttribute('href').slice(1)))e.preventDefault()})});
+  if(location.hash.length>1)addEventListener('load',function(){enter(location.hash.slice(1))});
+
   /* fetch every image in page order right after load, 3 at a time, so nothing is still downloading when you reach it */
   addEventListener('load',function(){
     var c=navigator.connection;if(c&&c.saveData)return;
