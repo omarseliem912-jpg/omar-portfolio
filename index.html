@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Museum of Omar Seliem</title>
+<meta name="description" content="Omar Seliem, art direction portfolio. Four brands nobody asked for, hung in six rooms of art history.">
+<meta name="theme-color" content="#002FA7">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Museum of Omar Seliem">
+<meta property="og:description" content="Four brands nobody asked for, hung in six rooms of art history.">
+<meta property="og:url" content="https://omarseliem912-jpg.github.io/omar-portfolio/">
+<meta property="og:image" content="https://omarseliem912-jpg.github.io/omar-portfolio/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23002FA7'/%3E%3Ccircle cx='21' cy='11' r='7' fill='%23FFD400'/%3E%3Cpath d='M4 28 12 14l8 14z' fill='%23D01F1F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;900&family=Bangers&family=Anton&family=Limelight&family=Marcellus&family=Rubik+Spray+Paint&family=Permanent+Marker&family=Jost:wght@400;600;800&family=Monoton&family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one museum, seven rooms. Each room is a different art movement with its own
+   palette, type and wipe. A sticky "door" at the start of each room eats the previous one. */
+:root{
+  color-scheme:dark;
+  --klein:#002FA7; --paper:#F5F1E6; --ink:#101012; --sun:#FFD400;
+  --pop-bg:#FF6A13; --pop-ac:#1F4FD8;
+  --con-bg:#E8E0CF; --con-ac:#D01F1F;
+  --deco-bg:#17443A; --deco-fg:#F6DDCE; --deco-ac:#D9B45B;
+  --st-bg:#C9FF2E; --st-ac:#FF4D1A;
+  --bau-bg:#F2EDE1; --bau-r:#E0301E; --bau-b:#1D4E9E; --bau-y:#F4B400;
+  --op-bg:#0A0A0A; --op-fg:#FFFFFF;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  --sans:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  --lobby:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --gut-l:max(20px,env(safe-area-inset-left,0px)); --gut-r:max(20px,env(safe-area-inset-right,0px));
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+html{background:var(--ink)}
+body{background:var(--ink);color:var(--paper);font-family:var(--sans);font-size:17px;line-height:1.5;-webkit-font-smoothing:antialiased}
+main{overflow-x:clip}
+a{color:inherit}
+img{display:block;width:100%;height:auto}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+.wrap{padding-left:var(--gut-l);padding-right:var(--gut-r);max-width:1500px;margin:0 auto}
+:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+
+/* ── HUD ── */
+.hud{position:fixed;z-index:90;left:0;right:0;top:0;display:flex;justify-content:space-between;gap:16px;
+  padding:calc(14px + env(safe-area-inset-top,0px)) var(--gut-r) 0 var(--gut-l);color:var(--hud,var(--paper));transition:color .35s;pointer-events:none}
+html[data-hall="pop"],html[data-hall="con"],html[data-hall="street"],html[data-hall="bau"]{--hud:var(--ink)}
+html[data-hall="deco"]{--hud:var(--deco-fg)}html[data-hall="op"]{--hud:var(--op-fg)}
+.hud a{pointer-events:auto;text-decoration:none}
+.bar{position:fixed;z-index:90;left:0;bottom:0;height:5px;width:100%;transform-origin:0 50%;transform:scaleX(0);background:var(--hud,var(--paper));transition:background-color .35s;will-change:transform}
+.cur{position:fixed;z-index:95;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;pointer-events:none;background:#fff;mix-blend-mode:difference;
+  border-radius:50%;transition:border-radius .4s,clip-path .4s,width .25s,height .25s,margin .25s;display:none;will-change:transform}
+@media (hover:hover) and (pointer:fine){.cur{display:block}}
+html[data-hall="con"] .cur{border-radius:0;clip-path:polygon(0 0,100% 50%,0 100%)}
+html[data-hall="deco"] .cur{border-radius:0;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+html[data-hall="street"] .cur{border-radius:38% 62% 55% 45%/60% 40% 60% 40%}
+html[data-hall="bau"] .cur{border-radius:0;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)}
+html[data-hall="op"] .cur{background:none;border:6px double #fff}
+.cur.big{width:96px;height:96px;margin:-48px 0 0 -48px}
+
+/* ── LOBBY ── */
+.lobby{position:relative;background:var(--klein);color:var(--paper);padding-block:clamp(84px,13vh,150px) 100vh;overflow:hidden}
+.lobby .eyebrow{display:flex;gap:10px 28px;flex-wrap:wrap}
+.name{font-family:var(--lobby);font-weight:900;font-size:clamp(84px,21.5vw,400px);line-height:.8;text-transform:uppercase;margin:clamp(26px,5vh,60px) 0 0 -.03em;letter-spacing:-.01em}
+.name .row{display:block;white-space:nowrap}
+.name .l{display:inline-block;width:.56em;text-align:center;transition:color .25s}
+.thesis{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px 60px;margin-top:clamp(34px,7vh,80px);align-items:start}
+.thesis p{font-family:var(--lobby);font-weight:700;font-size:clamp(30px,3.6vw,58px);line-height:.98;text-transform:uppercase;max-width:16ch}
+.thesis p b{color:var(--sun);font-weight:700}
+.plan{list-style:none;border-top:2px solid var(--paper)}
+.plan a{display:grid;grid-template-columns:3.2em minmax(0,1fr) auto;gap:14px;align-items:baseline;padding:13px 10px;border-bottom:2px solid var(--paper);text-decoration:none;
+  background:linear-gradient(var(--c),var(--c)) 0 0/0 100% no-repeat;transition:background-size .45s cubic-bezier(.7,0,.2,1),color .3s}
+.plan a:hover,.plan a:focus-visible{background-size:100% 100%;color:var(--t)}
+.plan b{font-family:var(--lobby);font-weight:900;font-size:clamp(24px,2.5vw,36px);line-height:1;text-transform:uppercase}
+.shape{position:absolute;pointer-events:none;will-change:transform}
+.s1{width:22vw;height:22vw;border-radius:50%;background:var(--sun);right:5vw;top:11vh}
+.s2{width:0;height:0;border-left:9vw solid transparent;border-right:9vw solid transparent;border-bottom:15vw solid var(--con-ac);right:30vw;top:46vh;opacity:.9}
+.s3{width:11vw;height:11vw;background:var(--st-bg);left:47vw;top:13vh}
+.lobby .wrap{position:relative;z-index:1}
+
+/* ── HALLS ── */
+.hall{position:relative;margin-top:-100vh;--p:1}
+.door{height:235vh;pointer-events:none;background:var(--prev)}
+.pin{position:sticky;top:0;height:100vh;overflow:hidden;background:var(--bg);color:var(--fg);display:grid;align-content:center;contain:layout paint;transform:translateZ(0)}
+.pin .wrap{width:100%;position:relative;z-index:1}
+.pin .tags{display:flex;justify-content:space-between;gap:10px 24px;flex-wrap:wrap}
+.pin h2{font-family:var(--disp);font-weight:var(--dw,400);font-size:var(--ts);line-height:var(--tl,.84);text-transform:uppercase;margin-block:clamp(14px,3vh,30px);
+  transform:translate3d(0,calc((1 - var(--p))*26vh),0) rotate(calc((1 - var(--p))*var(--tr,0deg)));transform-origin:0 100%;will-change:transform}
+.body{position:relative;background:var(--bg);color:var(--fg);padding-block:4vh 100vh}
+.hall.last .body{padding-block:4vh 12vh}
+.say{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:28px 60px;align-items:end;padding-bottom:clamp(50px,9vh,110px)}
+.idea{font-family:var(--disp);font-weight:var(--dw,400);font-size:clamp(40px,6.6vw,118px);line-height:.94;text-transform:uppercase;text-wrap:balance}
+.say p{max-width:38ch}
+.say .mono{display:block;margin-top:16px;opacity:.75}
+.works{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:clamp(22px,4vw,64px) clamp(18px,3vw,48px);align-items:center}
+.fig{grid-column:span 6;position:relative}
+.fig.w{grid-column:1/-1}.fig.n{grid-column:span 5}.fig.x{grid-column:span 7}
+.art{position:relative;transform:perspective(1100px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) rotate(var(--r,0deg));transition:transform .5s cubic-bezier(.2,.8,.2,1);will-change:transform}
+@media (hover:hover){.art:hover{transition-duration:.08s}}
+.fig figcaption{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;margin-top:18px}
+.mq{overflow:hidden;white-space:nowrap;margin-block:clamp(50px,10vh,120px);font-family:var(--disp);font-weight:var(--dw,400);font-size:clamp(60px,13vw,220px);line-height:1;text-transform:uppercase}
+.mq div{display:inline-block;animation:mq 22s linear infinite;padding-right:.4em}
+.mq.rev div{animation-direction:reverse}
+@keyframes mq{to{transform:translate3d(-50%,0,0)}}
+.mq div{will-change:transform}
+.js .hall:not(.live) .mq div,.js .hall:not(.live) .pin::before{animation-play-state:paused}
+
+/* reveal (only armed once JS is running) */
+.js .fig{transition:transform 1s cubic-bezier(.2,.9,.2,1),clip-path 1.1s cubic-bezier(.7,0,.2,1),opacity .6s}
+.js .fig:not(.in){opacity:0}
+
+/* ── POP ART · Tetr ── */
+.pop{--prev:var(--klein);--bg:var(--pop-bg);--fg:var(--ink);--disp:"Bangers",Impact,sans-serif;--ts:clamp(150px,38vw,640px);--tr:-14deg;color-scheme:light}
+.pop .pin{-webkit-mask-image:radial-gradient(circle,#000 calc(var(--p)*31px),transparent calc(var(--p)*31px + 1px));mask-image:radial-gradient(circle,#000 calc(var(--p)*31px),transparent calc(var(--p)*31px + 1px));-webkit-mask-size:42px 42px;mask-size:42px 42px}
+.pop .pin::before{content:"";position:absolute;inset:0;background:radial-gradient(circle,var(--pop-ac) 0 5px,transparent 6px) 0 0/26px 26px;opacity:.9;
+  -webkit-mask-image:linear-gradient(115deg,transparent 38%,#000 100%);mask-image:linear-gradient(115deg,transparent 38%,#000 100%)}
+.pop .pin h2{color:var(--paper);-webkit-text-stroke:clamp(3px,.5vw,8px) var(--ink);text-shadow:.045em .045em 0 var(--ink),.09em .09em 0 var(--pop-ac);letter-spacing:.02em;paint-order:stroke fill}
+.pop .art{border:5px solid var(--ink);box-shadow:16px 16px 0 var(--pop-ac);background:var(--ink)}
+.pop .fig:nth-child(odd) .art{box-shadow:-16px 16px 0 var(--ink)}
+@media (hover:hover){.pop .art:hover{box-shadow:26px 26px 0 var(--pop-ac)}}
+.js .pop .fig:not(.in){transform:scale(.55) rotate(-9deg)}
+.js .pop .fig{transition-timing-function:cubic-bezier(.3,1.7,.4,1)}
+.pop .idea{color:var(--paper);text-shadow:.05em .05em 0 var(--ink);letter-spacing:.02em}
+.pop .mq{color:var(--pop-ac);text-shadow:.04em .04em 0 var(--ink)}
+
+/* ── CONSTRUCTIVISM · El Horreya ── */
+.con{--prev:var(--pop-bg);--bg:var(--con-bg);--fg:var(--ink);--disp:"Anton",Impact,sans-serif;--ts:clamp(76px,18.5vw,340px);--tr:9deg;color-scheme:light}
+.con .pin{clip-path:polygon(0 0,calc(var(--p)*170%) 0,calc(var(--p)*170% - 70%) 100%,0 100%)}
+.con .pin::before{content:"";position:absolute;right:-12vw;top:-14vw;width:62vw;height:62vw;border-radius:50%;background:var(--con-ac)}
+.con .pin::after{content:"";position:absolute;left:-10%;right:-10%;bottom:16vh;height:clamp(18px,3.4vw,56px);background:var(--ink);transform:rotate(-12deg);box-shadow:0 clamp(34px,6vw,96px) 0 var(--con-ac)}
+.con .pin h2{transform:translate3d(calc((1 - var(--p))*-40vw),0,0) rotate(-6deg);transform-origin:0 50%}
+.con .pin h2 span{color:var(--con-ac);mix-blend-mode:multiply}
+.con .art{box-shadow:0 0 0 2px var(--ink)}
+.con .fig::before{content:"";position:absolute;inset:8% -5% -6% 12%;background:var(--con-ac);transform:rotate(-5deg);z-index:0}
+.con .fig:nth-child(even)::before{background:var(--ink);inset:-5% 10% 9% -5%;transform:rotate(4deg)}
+.con .fig:nth-child(odd){--r:-2.5deg}.con .fig:nth-child(even){--r:2deg}
+.js .con .fig:not(.in){transform:translate3d(-28vw,12vh,0) rotate(-16deg)}
+.js .con .fig:nth-child(even):not(.in){transform:translate3d(28vw,12vh,0) rotate(16deg)}
+.con .idea span{color:var(--con-ac)}
+.con .mq{transform:rotate(-4deg);background:var(--con-ac);color:var(--con-bg);padding-block:.08em;margin-inline:-4vw}
+
+/* ── ART DECO · Effendi ── */
+.deco{--prev:var(--con-bg);--bg:var(--deco-bg);--fg:var(--deco-fg);--disp:"Limelight","Marcellus",Georgia,serif;--ts:clamp(64px,15.5vw,290px);--tl:1;color-scheme:dark}
+.deco .pin{clip-path:inset(calc((1 - var(--p))*100%) calc((1 - var(--p))*30%) 0 calc((1 - var(--p))*30%) round calc((1 - var(--p))*60vw) calc((1 - var(--p))*60vw) 0 0);text-align:center}
+.deco .pin::before{content:"";position:absolute;left:50%;top:100%;width:170vmax;height:170vmax;margin:-85vmax 0 0 -85vmax;will-change:transform;
+  background:repeating-conic-gradient(from 0deg,var(--deco-ac) 0 2deg,transparent 2deg 10deg);opacity:.5;animation:spin 90s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.deco .pin .tags{justify-content:center}
+.deco .pin h2{color:var(--deco-ac);letter-spacing:calc(.02em + (1 - var(--p))*.5em);transform:none;text-shadow:0 0 0 var(--deco-bg),.03em .03em 0 var(--deco-bg)}
+.deco .art{padding:clamp(8px,1.2vw,16px);border:1px solid var(--deco-ac);outline:1px solid var(--deco-ac);outline-offset:6px}
+.js .deco .fig:not(.in){opacity:1}
+.js .deco .fig:not(.in) .art{clip-path:inset(0 50% 0 50%)}
+.js .deco .art{clip-path:inset(-10% -10% -10% -10%);transition:transform .5s cubic-bezier(.2,.8,.2,1),clip-path 1.2s cubic-bezier(.7,0,.2,1)}
+.deco .idea{font-family:"Marcellus",Georgia,serif;text-transform:none;color:var(--deco-ac);font-size:clamp(38px,5.6vw,96px);line-height:1.02}
+.deco .mq{color:transparent;-webkit-text-stroke:1.5px var(--deco-ac);letter-spacing:.08em}
+.deco .fig figcaption{text-align:center;color:var(--deco-ac)}
+
+/* ── STREET ART · Kora Sharea ── */
+.street{--prev:var(--deco-bg);--bg:var(--st-bg);--fg:var(--ink);--disp:"Rubik Spray Paint","Permanent Marker",Impact,sans-serif;--ts:clamp(72px,18vw,340px);--tr:5deg;color-scheme:light}
+.street .pin{clip-path:polygon(0 0,100% 0,100% calc(var(--p)*140%),87.5% calc(var(--p)*140%),87.5% calc(var(--p)*104%),75% calc(var(--p)*104%),75% calc(var(--p)*172%),62.5% calc(var(--p)*172%),62.5% calc(var(--p)*118%),50% calc(var(--p)*118%),50% calc(var(--p)*190%),37.5% calc(var(--p)*190%),37.5% calc(var(--p)*108%),25% calc(var(--p)*108%),25% calc(var(--p)*150%),12.5% calc(var(--p)*150%),12.5% calc(var(--p)*101%),0 calc(var(--p)*101%))}
+.street .pin::before{content:"NO NET · NO REF · NO PROBLEM · NO NET · NO REF · NO PROBLEM";position:absolute;left:-4vw;bottom:9vh;white-space:nowrap;font-family:"Permanent Marker",cursive;font-size:clamp(22px,3.4vw,54px);color:var(--st-ac);transform:rotate(-5deg)}
+.street .pin h2{transform:translate3d(0,calc((1 - var(--p))*-30vh),0) rotate(-3deg)}
+.street .pin h2 span{color:var(--st-ac)}
+.street .art{box-shadow:0 22px 50px -18px rgba(0,0,0,.55)}
+.street .fig::after{content:"";position:absolute;left:50%;top:-16px;width:120px;height:34px;margin-left:-60px;background:rgba(16,16,18,.82);transform:rotate(-4deg);z-index:2}
+.street .fig:nth-child(odd){--r:-2deg}.street .fig:nth-child(even){--r:2.5deg}
+.js .street .fig:not(.in){transform:translate3d(0,-8vh,0);opacity:1}
+.js .street .fig:not(.in) .art{clip-path:inset(0 0 100% 0)}
+.js .street .fig:not(.in)::after{opacity:0}
+.street .fig::after{transition:opacity .4s 1s}
+.js .street .art{clip-path:inset(-20% -20% -20% -20%);transition:transform .5s cubic-bezier(.2,.8,.2,1),clip-path 1.1s cubic-bezier(.7,0,.2,1)}
+.street .idea{font-family:"Permanent Marker",cursive}
+.street .mq{color:var(--st-ac)}
+
+/* ── BAUHAUS · Nine to five ── */
+.bau{--prev:var(--st-bg);--bg:var(--bau-bg);--fg:var(--ink);--disp:"Jost","Century Gothic",Futura,sans-serif;--dw:800;--ts:clamp(110px,27vw,500px);color-scheme:light}
+.bau .pin{-webkit-mask-image:linear-gradient(90deg,#000 calc(var(--p)*100%),transparent 0);mask-image:linear-gradient(90deg,#000 calc(var(--p)*100%),transparent 0);-webkit-mask-size:12.5% 100%;mask-size:12.5% 100%}
+.bau .pin::before{content:"";position:absolute;right:8vw;top:12vh;width:30vw;height:30vw;border-radius:50%;background:var(--bau-y);transform:translate3d(calc((1 - var(--p))*30vw),0,0)}
+.bau .pin::after{content:"";position:absolute;right:26vw;bottom:10vh;width:22vw;height:22vw;background:var(--bau-b);transform:rotate(calc(var(--p)*45deg))}
+.bau .pin h2{letter-spacing:-.04em}.bau .pin h2 span{color:var(--bau-r)}
+.jobs{list-style:none;border-top:6px solid var(--ink)}
+.job{display:grid;grid-template-columns:clamp(40px,6vw,90px) minmax(0,1.5fr) minmax(0,1fr);gap:8px clamp(16px,3vw,48px);align-items:center;padding-block:clamp(18px,3vh,34px);border-bottom:2px solid var(--ink)}
+.job i{display:block;width:clamp(34px,4.4vw,64px);height:clamp(34px,4.4vw,64px);transition:transform .6s cubic-bezier(.3,1.6,.4,1)}
+.job:hover i{transform:rotate(180deg) scale(1.2)}
+.job:nth-child(3n+1) i{background:var(--bau-r);border-radius:50%}
+.job:nth-child(3n+2) i{background:var(--bau-b)}
+.job:nth-child(3n) i{background:var(--bau-y);clip-path:polygon(50% 0,100% 100%,0 100%)}
+.job b{font-family:var(--disp);font-weight:800;font-size:clamp(34px,5.4vw,96px);line-height:.92;letter-spacing:-.03em;text-transform:uppercase}
+.job span{font-family:var(--disp);font-weight:600;font-size:clamp(17px,1.5vw,22px);line-height:1.25}
+.job span small{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:400;margin-top:6px;opacity:.7}
+.js .job{transition:transform .9s cubic-bezier(.2,.9,.2,1),opacity .6s}
+.js .job:not(.in){transform:translate3d(-12vw,0,0);opacity:0}
+.skills{display:flex;flex-wrap:wrap;gap:10px;margin-top:clamp(34px,6vh,70px)}
+.skills span{font-family:var(--disp);font-weight:600;font-size:clamp(17px,1.6vw,24px);padding:8px 18px;border:2px solid var(--ink);border-radius:999px}
+.skills span:nth-child(3n+1){background:var(--bau-y)}.skills span:nth-child(3n){background:var(--bau-b);color:var(--bau-bg)}
+
+/* ── OP ART · Exit ── */
+.op{--prev:var(--bau-bg);--bg:var(--op-bg);--fg:var(--op-fg);--disp:"Monoton","Big Shoulders Display",Impact,sans-serif;--ts:clamp(60px,15vw,280px);--tl:1.05;color-scheme:dark}
+.op .pin{-webkit-mask-image:repeating-radial-gradient(circle at 50% 50%,#000 0 calc(var(--p)*44px),transparent 0 44px);mask-image:repeating-radial-gradient(circle at 50% 50%,#000 0 calc(var(--p)*44px),transparent 0 44px);text-align:center}
+.op .pin::before{content:"";position:absolute;left:50%;top:50%;width:200vmax;height:200vmax;margin:-100vmax 0 0 -100vmax;will-change:transform;
+  background:repeating-radial-gradient(circle,var(--op-fg) 0 2px,transparent 2px 26px);opacity:.28;animation:pulse 7s ease-in-out infinite alternate}
+@keyframes pulse{from{transform:scale(.55)}to{transform:scale(1)}}
+.op .pin .tags{justify-content:center}
+.op .pin h2{transform:scale(calc(.5 + var(--p)*.5))}
+.exit{text-align:center;display:grid;justify-items:center;gap:26px}
+.mail{font-family:var(--lobby);font-weight:900;font-size:clamp(30px,7vw,128px);line-height:1;text-transform:uppercase;word-break:break-all;user-select:all;
+  background:repeating-linear-gradient(90deg,var(--op-fg) 0 6px,transparent 6px 12px);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-stroke:1.5px var(--op-fg);transition:background-size .5s}
+.mail:hover{background:var(--op-fg);-webkit-background-clip:text;background-clip:text}
+.btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.btn{padding:15px 26px;border:2px solid var(--op-fg);text-decoration:none;transition:background .25s,color .25s}
+.btn:hover,.btn:focus-visible{background:var(--op-fg);color:var(--op-bg)}
+.fine{opacity:.55;max-width:70ch;margin-top:8vh;line-height:1.9;font-size:10.5px}
+
+@media (max-width:820px){
+  .thesis,.say{grid-template-columns:minmax(0,1fr)}
+  .fig,.fig.n,.fig.x{grid-column:1/-1}
+  .job{grid-template-columns:40px minmax(0,1fr)}.job span{grid-column:2}
+  .shape{opacity:.5}.s3{display:none}.s1{top:auto;bottom:108vh;right:-6vw}
+  .hud .full{display:none}.hud .where{white-space:nowrap;font-size:10.5px;letter-spacing:.1em}
+  .pop .art,.pop .fig:nth-child(odd) .art{box-shadow:8px 8px 0 var(--pop-ac)}
+}
+@media (prefers-reduced-motion:reduce){
+  .mq div,.deco .pin::before,.op .pin::before{animation:none}
+  .js .fig,.js .job,.art{transition:none}
+}
+</style>
+
+</head>
+<body>
+<header class="hud mono"><a href="#lobby">MOS<span class="full"> · Omar Seliem</span></a><span class="where" id="where">Lobby</span></header>
+<div class="bar" id="bar"></div>
+<div class="cur" id="cur" aria-hidden="true"></div>
+
+<main>
+<section class="lobby" id="lobby" data-hall="lobby" data-name="Lobby">
+  <span class="shape s1" data-d="34"></span><span class="shape s2" data-d="-22"></span><span class="shape s3" data-d="56"></span>
+  <div class="wrap">
+    <div class="eyebrow mono"><span>Museum of Omar Seliem</span><span>Cairo</span><span>Permanent collection · MMXXVI</span><span>Admit one</span></div>
+    <h1 class="name" id="name" aria-label="Omar Seliem"><span class="row" aria-hidden="true">OMAR</span><span class="row" aria-hidden="true">SELIEM</span></h1>
+    <div class="thesis">
+      <p>Four brands nobody asked for, hung in <b>six rooms</b> of art history.</p>
+      <ol class="plan" aria-label="Floor plan">
+        <li><a href="#tetr" style="--c:var(--pop-bg);--t:var(--ink)"><span class="mono">I</span><b>Tetr</b><span class="mono">Pop Art</span></a></li>
+        <li><a href="#horreya" style="--c:var(--con-ac);--t:var(--paper)"><span class="mono">II</span><b>El Horreya</b><span class="mono">Constructivism</span></a></li>
+        <li><a href="#effendi" style="--c:var(--deco-bg);--t:var(--deco-ac)"><span class="mono">III</span><b>Effendi</b><span class="mono">Art Deco</span></a></li>
+        <li><a href="#kora" style="--c:var(--st-bg);--t:var(--ink)"><span class="mono">IV</span><b>Kora Sharea</b><span class="mono">Street Art</span></a></li>
+        <li><a href="#nine" style="--c:var(--bau-y);--t:var(--ink)"><span class="mono">V</span><b>Nine to five</b><span class="mono">Bauhaus</span></a></li>
+        <li><a href="#exit" style="--c:var(--op-bg);--t:var(--op-fg)"><span class="mono">VI</span><b>Write to me</b><span class="mono">Op Art</span></a></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- I · POP -->
+<section class="hall pop" id="tetr" data-hall="pop" data-name="I · Pop Art · Tetr">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery I · Pop Art</span><span>Fashion brand · naming · campaign</span></div>
+    <h2>Tetr!</h2>
+  </div></div></div>
+  <div class="body"><div class="wrap">
+    <div class="say">
+      <p class="idea">Every collection is a film. Every piece has a theme song.</p>
+      <div><p>My generation knows 2000s Egyptian films by heart: the lines, the songs, what the heroes wore. Nobody turned that into clothes.</p><span class="mono">Concept · naming · art direction · identity</span></div>
+    </div>
+    <div class="works">
+      <figure class="fig w"><div class="art"><img src="img/tetr-lookbook.webp" srcset="img/tetr-lookbook-900.webp 900w, img/tetr-lookbook.webp 1440w" sizes="(max-width:820px) 92vw, 92vw" width="1440" height="900" decoding="async" alt="Tetr lookbook shot like film stills in downtown Cairo"></div><figcaption>Lookbook · shot like film stills</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/tetr-poster.webp" srcset="img/tetr-poster-900.webp 900w, img/tetr-poster.webp 800w" sizes="(max-width:820px) 92vw, 40vw" width="800" height="1100" decoding="async" alt="Tetr collection 01 poster styled like a 2000s comedy film poster" loading="lazy"></div><figcaption>Collection 01 poster</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/tetr-tag.webp" srcset="img/tetr-tag-900.webp 900w, img/tetr-tag.webp 1440w" sizes="(max-width:820px) 92vw, 56vw" width="1440" height="900" decoding="async" alt="Tetr hang tag written as a credit roll" loading="lazy"></div><figcaption>The tag is a credit roll</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/tetr-pieces.webp" srcset="img/tetr-pieces-900.webp 900w, img/tetr-pieces.webp 1440w" sizes="(max-width:820px) 92vw, 56vw" width="1440" height="900" decoding="async" alt="Tetr pieces and prints: denim jacket, orange tee, cap" loading="lazy"></div><figcaption>Pieces and prints</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/tetr-end.webp" srcset="img/tetr-end-900.webp 900w, img/tetr-end.webp 1080w" sizes="(max-width:820px) 92vw, 40vw" width="1080" height="1350" decoding="async" alt="Tetr Instagram post: The End, with customers in the credits" loading="lazy"></div><figcaption>The End · customers in the credits</figcaption></figure>
+      <figure class="fig w"><div class="art"><img src="img/tetr-logo.webp" srcset="img/tetr-logo-900.webp 900w, img/tetr-logo.webp 1200w" sizes="(max-width:820px) 92vw, 92vw" width="1200" height="900" decoding="async" alt="Tetr identity system: one film, two colours" loading="lazy"></div><figcaption>Identity · one film, two colours</figcaption></figure>
+    </div>
+  </div>
+  <div class="mq" aria-hidden="true"><div>Lights! Camera! Outfit! ★ Lights! Camera! Outfit! ★ Lights! Camera! Outfit! ★ Lights! Camera! Outfit! ★ </div></div>
+  </div>
+</section>
+
+<!-- II · CONSTRUCTIVISM -->
+<section class="hall con" id="horreya" data-hall="con" data-name="II · Constructivism · El Horreya">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery II · Constructivism</span><span>Café rebrand · Bab El Louk · since 1936</span></div>
+    <h2>El <span>Horreya</span></h2>
+  </div></div></div>
+  <div class="body"><div class="wrap">
+    <div class="say">
+      <p class="idea">The brand is <span>the talk.</span></p>
+      <div><p>No door, no logo, no ads. Ninety years of people talking at the same tables. So the logo is a newspaper masthead and every piece prints a line overheard at a table.</p><span class="mono">Concept · art direction · identity</span></div>
+    </div>
+    <div class="works">
+      <figure class="fig w"><div class="art"><img src="img/horreya-photo-room.webp" srcset="img/horreya-photo-room-900.webp 900w, img/horreya-photo-room.webp 1800w" sizes="(max-width:820px) 92vw, 92vw" width="1800" height="1369" decoding="async" alt="The real El Horreya café interior, printed as a black and red newspaper halftone" loading="lazy"></div><figcaption>Real photo · El Horreya, the room</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/horreya-photo-chair.webp" srcset="img/horreya-photo-chair-900.webp 900w, img/horreya-photo-chair.webp 1200w" sizes="(max-width:820px) 92vw, 40vw" width="1200" height="1513" decoding="async" alt="A café chair at El Horreya, printed in red halftone" loading="lazy"></div><figcaption>Real photo · the chair is empty, the talk is still sitting</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/horreya-photo-table.webp" srcset="img/horreya-photo-table-900.webp 900w, img/horreya-photo-table.webp 1700w" sizes="(max-width:820px) 92vw, 56vw" width="1700" height="1166" decoding="async" alt="A Cairo café table with Turkish coffee, tea and an ashtray, printed as a halftone with a red circle" loading="lazy"></div><figcaption>Archive photo · a Cairo café table</figcaption></figure>
+      <figure class="fig w"><div class="art"><img src="img/horreya-night-edition.webp" srcset="img/horreya-night-edition-900.webp 900w, img/horreya-night-edition.webp 1800w" sizes="(max-width:820px) 92vw, 92vw" width="1800" height="1271" decoding="async" alt="El Horreya night edition: the café as its own newspaper" loading="lazy"></div><figcaption>The night edition</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/horreya-poster.webp" srcset="img/horreya-poster-900.webp 900w, img/horreya-poster.webp 800w" sizes="(max-width:820px) 92vw, 40vw" width="800" height="1100" decoding="async" alt="El Horreya front-page poster with an overheard quote" loading="lazy"></div><figcaption>No door, so nobody's left outside</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/horreya-logo.webp" srcset="img/horreya-logo-900.webp 900w, img/horreya-logo.webp 1200w" sizes="(max-width:820px) 92vw, 56vw" width="1200" height="900" decoding="async" alt="El Horreya logo system: masthead, ink version, table stamp, speech bubble" loading="lazy"></div><figcaption>Masthead · stamp · speech bubble</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/horreya-coasters.webp" srcset="img/horreya-coasters-900.webp 900w, img/horreya-coasters.webp 1200w" sizes="(max-width:820px) 92vw, 56vw" width="1200" height="700" decoding="async" alt="El Horreya coasters with table quotes" loading="lazy"></div><figcaption>Coasters · a rotating set of quotes</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/horreya-social.webp" srcset="img/horreya-social-900.webp 900w, img/horreya-social.webp 1080w" sizes="(max-width:820px) 92vw, 40vw" width="1080" height="1350" decoding="async" alt="El Horreya Instagram post: overheard number 07" loading="lazy"></div><figcaption>Overheard, No. 07</figcaption></figure>
+      <figure class="fig n"><div class="art"><img src="img/horreya-front-page.webp" srcset="img/horreya-front-page-900.webp 900w, img/horreya-front-page.webp 1400w" sizes="(max-width:820px) 92vw, 40vw" width="1400" height="1980" decoding="async" alt="El Horreya front page with the real café interior" loading="lazy"></div><figcaption>The front page</figcaption></figure>
+      <figure class="fig x"><div class="art"><img src="img/horreya-menu.webp" srcset="img/horreya-menu-900.webp 900w, img/horreya-menu.webp 900w" sizes="(max-width:820px) 92vw, 56vw" width="900" height="1200" decoding="async" alt="El Horreya menu designed as a newspaper page" loading="lazy"></div><figcaption>Menu · no booking, no rush</figcaption></figure>
+    </div>
+  </div>
+  <div class="mq rev" aria-hidden="true"><div>Extra! Extra! Overheard at table seven ◆ Extra! Extra! Overheard at table seven ◆ Extra! Extra! Overheard at table seven ◆ Extra! Extra! Overheard at table seven ◆ </div></div>
+  </div>
+</section>
+
+<!-- III · DECO -->
+<section class="hall deco" id="effendi" data-hall="deco" data-name="III · Art Deco · Effendi">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery III · Art Deco · Relaunch · since 1856</span></div>
+    <h2>Effendi</h2>
+    <div class="tags mono"><span>Department store → streetwear</span></div>
+  </div></div></div>
+  <div class="body"><div class="wrap">
+    <div class="say">
+      <p class="idea">The arch is the frame. The tile is the pattern.</p>
+      <div><p>Your mom shopped here. Now it's your turn. Omar Effendi returns as a streetwear label, every drop wearing a tile named after a Downtown street.</p><span class="mono">Concept · art direction · identity · campaign</span></div>
+    </div>
+    <div class="works">
+      <figure class="fig w"><div class="art"><img src="img/effendi-ask-mom.webp" srcset="img/effendi-ask-mom-900.webp 900w, img/effendi-ask-mom.webp 1800w" sizes="(max-width:820px) 92vw, 92vw" width="1800" height="1271" decoding="async" alt="Effendi chapter one: Ask your mom, archive photos inside arches" loading="lazy"></div><figcaption>Chapter 1 · Ask your mom</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/effendi-arch.webp" srcset="img/effendi-arch-900.webp 900w, img/effendi-arch.webp 1400w" sizes="(max-width:820px) 92vw, 46vw" width="1400" height="1980" decoding="async" alt="Effendi poster: the 1904 building inside the arch" loading="lazy"></div><figcaption>Your turn</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/effendi-social.webp" srcset="img/effendi-social-900.webp 900w, img/effendi-social.webp 1080w" sizes="(max-width:820px) 92vw, 46vw" width="1080" height="1350" decoding="async" alt="Effendi Instagram post: It's back" loading="lazy"></div><figcaption>It's back</figcaption></figure>
+      <figure class="fig w"><div class="art"><img src="img/effendi-logo.webp" srcset="img/effendi-logo-900.webp 900w, img/effendi-logo.webp 1200w" sizes="(max-width:820px) 92vw, 92vw" width="1200" height="900" decoding="async" alt="Effendi logo system: wordmark, arch mark, tile monogram, heritage lockup" loading="lazy"></div><figcaption>Wordmark · arch · tile monogram</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/effendi-mom.webp" srcset="img/effendi-mom-900.webp 900w, img/effendi-mom.webp 800w" sizes="(max-width:820px) 92vw, 46vw" width="800" height="1100" decoding="async" alt="Effendi chapter one poster with a family photo inside the arch" loading="lazy"></div><figcaption>Family photos inside the arch</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/effendi-launch.webp" srcset="img/effendi-launch-900.webp 900w, img/effendi-launch.webp 800w" sizes="(max-width:820px) 92vw, 46vw" width="800" height="1100" decoding="async" alt="Effendi chapter two poster: drop 01, the Abdel Aziz tile" loading="lazy"></div><figcaption>Drop 01 · the Abdel Aziz tile</figcaption></figure>
+    </div>
+  </div>
+  <div class="mq" aria-hidden="true"><div>Since 1856 ✦ Downtown Cairo ✦ Since 1856 ✦ Downtown Cairo ✦ Since 1856 ✦ Downtown Cairo ✦ Since 1856 ✦ Downtown Cairo ✦ </div></div>
+  </div>
+</section>
+
+<!-- IV · STREET -->
+<section class="hall street" id="kora" data-hall="street" data-name="IV · Street Art · Kora Sharea">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery IV · Street Art</span><span>Spec campaign · adidas Egypt</span></div>
+    <h2>Kora <span>Sharea</span></h2>
+  </div></div></div>
+  <div class="body"><div class="wrap">
+    <div class="say">
+      <p class="idea">Every alley is a stadium.</p>
+      <div><p>Egypt's real football is in the alleys, on the rooftops, between two bricks. So the alley gets stadium respect: a live broadcast, a trading card, a boot box shaped like the goal.</p><span class="mono">Concept · art direction · copy</span></div>
+    </div>
+    <div class="works">
+      <figure class="fig w"><div class="art"><img src="img/kora-key.webp" srcset="img/kora-key-900.webp 900w, img/kora-key.webp 1800w" sizes="(max-width:820px) 92vw, 92vw" width="1800" height="1125" decoding="async" alt="Kora Sharea key visual: street football, one ball, zero rules" loading="lazy"></div><figcaption>One ball. Zero rules.</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/kora-stadium.webp" srcset="img/kora-stadium-900.webp 900w, img/kora-stadium.webp 1400w" sizes="(max-width:820px) 92vw, 46vw" width="1400" height="1750" decoding="async" alt="Kora Sharea pitch of the week: an alley as a live broadcast" loading="lazy"></div><figcaption>Pitch of the week</figcaption></figure>
+      <figure class="fig"><div class="art"><img src="img/kora-legend.webp" srcset="img/kora-legend-900.webp 900w, img/kora-legend.webp 1400w" sizes="(max-width:820px) 92vw, 46vw" width="1400" height="1750" decoding="async" alt="Kora Sharea Alley Legends trading card number 07" loading="lazy"></div><figcaption>Alley Legends · No. 07</figcaption></figure>
+    </div>
+  </div>
+  <div class="mq rev" aria-hidden="true"><div>No net. No ref. No problem. ✕ No net. No ref. No problem. ✕ No net. No ref. No problem. ✕ No net. No ref. No problem. ✕ </div></div>
+  </div>
+</section>
+
+<!-- V · BAUHAUS -->
+<section class="hall bau" id="nine" data-hall="bau" data-name="V · Bauhaus · Nine to five">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery V · Bauhaus</span><span>The day job</span></div>
+    <h2>9<span>→</span>5</h2>
+  </div></div></div>
+  <div class="body"><div class="wrap">
+    <div class="say">
+      <p class="idea">I sell by day. I design after five.</p>
+      <div><p>I spend my days learning what makes people say yes. I bring that into art direction: every idea starts from something real I saw in Cairo.</p></div>
+    </div>
+    <ol class="jobs">
+      <li class="job"><i></i><b>Kennah Stays</b><span>Business Development Executive<small>Sep 2026 — now · owner leads, revenue-share deals</small></span></li>
+      <li class="job"><i></i><b>Home Hive</b><span>Operations &amp; CX Supervisor<small>Orders moving, customers happy</small></span></li>
+      <li class="job"><i></i><b>Amazon Egypt</b><span>Regional UX Specialist<small>Reading what people struggle with</small></span></li>
+      <li class="job"><i></i><b>El-Adel Eyewear</b><span>Sales<small>Face to face, one customer at a time</small></span></li>
+      <li class="job"><i></i><b>Cairo University</b><span>BBA, Marketing minor<small>Faculty of Commerce, English Section · 2026</small></span></li>
+    </ol>
+    <div class="skills"><span>Concept</span><span>Art direction</span><span>Naming</span><span>Identity</span><span>Campaign</span><span>Negotiation</span><span>Partnerships</span><span>Lead generation</span><span>Arabic · English</span></div>
+  </div></div>
+</section>
+
+<!-- VI · OP -->
+<section class="hall op last" id="exit" data-hall="op" data-name="VI · Op Art · Exit">
+  <div class="door"><div class="pin"><div class="wrap">
+    <div class="tags mono"><span>Gallery VI · Op Art · Exit through here</span></div>
+    <h2>Write<br>to me</h2>
+  </div></div></div>
+  <div class="body"><div class="wrap exit">
+    <span class="mono">Commissions · art direction roles · a coffee at El Horreya</span>
+    <a class="mail" id="mail" href="mailto:o.seliem@outlook.com" style="text-decoration:none">o.seliem@outlook.com</a>
+    <div class="btns"><button class="btn mono" type="button" id="copy">Copy email</button><a class="btn mono" href="https://www.linkedin.com/in/omar-seliem" target="_blank" rel="noopener">LinkedIn ↗</a><a class="btn mono" href="#lobby">Back to the lobby ↑</a></div>
+    <p class="fine mono">© 2026 Omar Seliem · Self-initiated concepts, not affiliated with the brands shown · Tetr lookbook generated with AI, art directed by Omar · El Horreya photos: Wikimedia Commons · Café table photo: Matt @ PEK, CC BY-SA 2.0, via Wikimedia Commons, edited</p>
+  </div></div>
+</section>
+</main>
+
+<script>
+(function(){
+  var root=document.documentElement,reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  root.classList.add('js');
+  var halls=[].slice.call(document.querySelectorAll('[data-hall]')),doors=halls.map(function(h){return h.querySelector('.door')}),pins=halls.map(function(h){return h.querySelector('.pin')}),last=[],tops=[],docH=1;
+  function measure(){var y=scrollY;tops=doors.map(function(d){return d?d.getBoundingClientRect().top+y:0});docH=document.documentElement.scrollHeight}
+  var where=document.getElementById('where'),bar=document.getElementById('bar'),shapes=[].slice.call(document.querySelectorAll('.shape'));
+  var cur=-1,queued=false;
+
+  function frame(){
+    queued=false;
+    var vh=innerHeight,y=scrollY,max=Math.max(1,docH-vh),active=0;
+    for(var i=1;i<halls.length;i++){
+      var t=tops[i]-y,p=Math.max(0,Math.min(1,-t/vh));
+      if(reduce)p=1;
+      var ps=p.toFixed(3);
+      if(ps!==last[i]){last[i]=ps;pins[i].style.setProperty('--p',ps)}
+      if(-t/vh>.5)active=i;
+    }
+    if(active!==cur){cur=active;root.setAttribute('data-hall',halls[active].dataset.hall);where.textContent=halls[active].dataset.name}
+    bar.style.transform='scaleX('+(y/max).toFixed(4)+')';
+    if(!reduce&&y<vh*1.6)shapes.forEach(function(s){s.style.transform='translate3d('+(mx*s.dataset.d*.6).toFixed(1)+'px,'+(y*s.dataset.d/100+my*s.dataset.d*.6).toFixed(1)+'px,0) rotate('+(y*s.dataset.d/400).toFixed(2)+'deg)'});
+  }
+  var mx=0,my=0;
+  function ask(){if(!queued){queued=true;requestAnimationFrame(frame)}}
+  addEventListener('scroll',ask,{passive:true});addEventListener('resize',function(){measure();ask()});addEventListener('load',function(){measure();ask()});
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){measure();ask()});
+  if('ResizeObserver' in window)new ResizeObserver(function(){measure();ask()}).observe(document.querySelector('main'));
+  measure();frame();
+  if('IntersectionObserver' in window){var lo=new IntersectionObserver(function(es){es.forEach(function(e){e.target.classList.toggle('live',e.isIntersecting)})},{rootMargin:'40% 0px 40% 0px'});document.querySelectorAll('.hall').forEach(function(h){lo.observe(h)})}
+  else document.querySelectorAll('.hall').forEach(function(h){h.classList.add('live')});
+
+  /* reveal */
+  var items=[].slice.call(document.querySelectorAll('.fig,.job'));
+  if('IntersectionObserver' in window&&!reduce){
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{rootMargin:'0px 0px -12% 0px',threshold:.08});
+    items.forEach(function(el,i){if(el.classList.contains('job'))el.style.transitionDelay=(i%5*70)+'ms';io.observe(el)});
+  }else items.forEach(function(el){el.classList.add('in')});
+
+  /* cursor + 3D tilt */
+  var c=document.getElementById('cur');
+  if(matchMedia('(hover:hover) and (pointer:fine)').matches){
+    addEventListener('pointermove',function(e){
+      c.style.transform='translate3d('+e.clientX+'px,'+e.clientY+'px,0)';
+      mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5;if(scrollY<innerHeight*1.6)ask();
+      var a=e.target.closest&&e.target.closest('.art');
+      c.classList.toggle('big',!!a||!!(e.target.closest&&e.target.closest('a,button')));
+      if(a&&!reduce){var r=a.getBoundingClientRect();a.style.setProperty('--ry',(((e.clientX-r.left)/r.width-.5)*14).toFixed(2)+'deg');a.style.setProperty('--rx',((.5-(e.clientY-r.top)/r.height)*10).toFixed(2)+'deg')}
+    },{passive:true});
+    document.querySelectorAll('.art').forEach(function(a){a.addEventListener('pointerleave',function(){a.style.setProperty('--rx','0deg');a.style.setProperty('--ry','0deg')})});
+  }
+
+  /* lobby name: every letter keeps trying on another movement */
+  var looks=[
+    ['"Big Shoulders Display",Impact,sans-serif','var(--paper)',900],
+    ['"Bangers",Impact,sans-serif','var(--pop-bg)',400],
+    ['"Anton",Impact,sans-serif','var(--con-ac)',400],
+    ['"Limelight",Georgia,serif','var(--deco-ac)',400],
+    ['"Rubik Spray Paint",Impact,sans-serif','var(--st-bg)',400],
+    ['"Jost",Futura,sans-serif','var(--sun)',800],
+    ['"Monoton",Impact,sans-serif','var(--paper)',400]];
+  var letters=[];
+  document.querySelectorAll('#name .row').forEach(function(r){
+    var t=r.textContent;r.textContent='';
+    t.split('').forEach(function(ch){var s=document.createElement('span');s.className='l';s.textContent=ch;r.appendChild(s);letters.push(s)});
+  });
+  function dress(s,k){var L=looks[k];s.style.fontFamily=L[0];s.style.color=L[1];s.style.fontWeight=L[2]}
+  if(!reduce){
+    var go=function(){
+      setInterval(function(){
+        if(scrollY>innerHeight)return;
+        var s=letters[Math.floor(Math.random()*letters.length)];
+        dress(s,Math.floor(Math.random()*looks.length));
+        var b=letters[Math.floor(Math.random()*letters.length)];if(Math.random()<.45)dress(b,0);
+      },170);
+    };
+    if(document.fonts&&document.fonts.ready)document.fonts.ready.then(go);else go();
+  }
+
+  /* copy */
+  var cp=document.getElementById('copy'),mail=document.getElementById('mail');
+  cp.addEventListener('click',function(){
+    var sel=function(){var r=document.createRange();r.selectNodeContents(mail);var s=getSelection();s.removeAllRanges();s.addRange(r);cp.textContent='Selected'};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(mail.textContent).then(function(){cp.textContent='Copied';setTimeout(function(){cp.textContent='Copy email'},1600)}).catch(sel);else sel();
+  });
+})();
+</script>
+</body>
+</html>
